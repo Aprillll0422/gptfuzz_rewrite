@@ -1,0 +1,23 @@
+# 核心深度学习框架
+torch
+torchvision
+torchaudio
+transformers
+accelerate
+sentencepiece
+
+# 推理与服务 (用于 main.py 中的 LocalVLLM)
+vllm
+fschat
+
+# 模糊测试框架 (GPTFuzzer 依赖)
+# gptfuzzer github中clone
+
+# 数据处理与评估
+pandas
+numpy
+scikit-learn
+tqdm
+
+# 其他工具
+httpx
