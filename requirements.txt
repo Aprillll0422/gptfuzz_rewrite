@@ -9,6 +9,7 @@ sentencepiece
 # 推理与服务 (用于 main.py 中的 LocalVLLM)
 vllmpip
 fastchat
+google-generativeai
 
 # 模糊测试框架 (GPTFuzzer 依赖)
 # gptfuzzer github中clone
