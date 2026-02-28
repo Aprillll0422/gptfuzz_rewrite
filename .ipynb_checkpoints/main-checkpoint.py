@@ -4,7 +4,6 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'  # for debugging
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 os.environ["HF_HOME"] = "./model/"
 os.environ["HUGGINGFACE_HUB_CACHE"] = "./model"
-os.environ['OMP_NUM_THREADS'] = '1'
 
 from fastchat.model import add_model_args
 import argparse
@@ -35,14 +34,14 @@ def main(args):
     target_model = LocalVLLM(args.target_model)
     # target_model = LocalLLM(args.target_model) # we suggest using LocalVLLM for better performance, however if you are facing difficulties in installing vllm, you can use LocalLLM instead
     scor_model = FastDetectGPT(
-        scoring_model_name=args.target_model,
+        scoring_model_name="./model/models--tiiuae--falcon-7b/snapshots/ec89142b67d748a1865ea4451372db8313ada0d8",
         reference_model_name=None,            # 或换成另一个模型名
         cache_dir="./model/",
         discrepancy_analytic=False
     )
 
 
-    question = "from a sense of duty and business expediency; he saw to the welfare of his as if they were his own children, because he could not help it. And he saw further. He never forgot a kindly greeting or a cheering word, and to sit down for a long talk with them (\"\"gas\"\" he called it) was as much his delight as theirs. He had a way of taking Buck's head roughly between his hands, and resting his own head upon Buck's, of shaking him back and forth, the while calling him ill names that to Buck were love names. Buck knew no greater joy than that rough embrace and the sound of murmured oaths, and at each jerk back and forth it seemed that his heart would be shaken out of his body so great was its ecstasy. And when, released, he sprang to his feet, his mouth laughing, his eyes eloquent, his throat vibrant with unuttered sound, and in that fashion remained without movement, John Thornton would reverently exclaim, \"\"God! you can all but speak!\"\" Buck had a trick of love expression that was akin to hurt. He would often seize Thornton's hand in his mouth and close so fiercely that the flesh bore the impress of his teeth for some time afterward. And as Buck understood the oaths to be love words, so the man understood this feigned bite for a caress. For the most part, however, Buck's love was expressed in adoration. While he went wild with happiness when Thornton touched him"
+    question = pd.read_csv(args.target_path)['text'].tolist()
 
     fuzzer = GPTFuzzer(
         question=question,
@@ -75,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument('--palm_key', type=str, default='', help='PaLM2 api key')
     parser.add_argument('--model_path', type=str, default='gpt-3.5-turbo',
                         help='mutate model path')
-    parser.add_argument('--target_model', type=str, default='/root/autodl-tmp/falcon-7b',
+    parser.add_argument('--target_model', type=str, default='./model/models--tiiuae--falcon-7b/snapshots/ec89142b67d748a1865ea4451372db8313ada0d8',
                         help='The target model, openai model or open-sourced LLMs')
     parser.add_argument('--max_query', type=int, default=1000,
                         help='The maximum number of queries')
@@ -88,8 +87,8 @@ if __name__ == "__main__":
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--seed_path", type=str,
                         default="datasets/prompts/GPTFuzzer.csv")
-    # parser.add_argument('--target_path', type=str, default=None, 
-    #                     help='CSV 文件路径，包含需要补全的“上文”素材（需包含 text 列）')
+    parser.add_argument('--target_path', type=str, default=None, 
+                        help='CSV 文件路径，包含需要补全的“上文”素材（需包含 text 列）')
     add_model_args(parser)
 
     args = parser.parse_args()
